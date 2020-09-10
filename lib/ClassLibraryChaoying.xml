@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ClassLibraryChaoying</name>
+    </assembly>
+    <members>
+        <member name="T:ClassLibraryChaoying.LockScreen">
+            <summary>
+            锁屏类
+            </summary>
+        </member>
+        <member name="M:ClassLibraryChaoying.LockScreen.Open(System.Object)">
+            <summary>
+            开启锁屏
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ClassLibraryChaoying.Size">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ClassLibraryChaoying.Size.Width">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ClassLibraryChaoying.Size.Height">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:ClassLibraryChaoying.CyWin">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ClassLibraryChaoying.CyWin.IntPtr">
+            <summary>
+            句柄
+            </summary>
+        </member>
+        <member name="P:ClassLibraryChaoying.CyWin.Rect">
+            <summary>
+            大小
+            </summary>
+        </member>
+        <member name="T:ClassLibraryChaoying.WindowsHelper">
+            <summary>
+            helper
+            </summary>
+        </member>
+        <member name="M:ClassLibraryChaoying.WindowsHelper.SetForegroundWindow(System.IntPtr)">
+            <summary>
+            
+            </summary>
+            <param name="hWnd"></param>
+            <returns></returns>
+        </member>
+        <member name="P:ClassLibraryChaoying.WindowsHelper.DESKTOP">
+            <summary>
+            获取真实设置的桌面分辨率大小
+            </summary>
+        </member>
+        <member name="P:ClassLibraryChaoying.WindowsHelper.ScaleX">
+            <summary>
+            获取宽度缩放百分比
+            </summary>
+        </member>
+        <member name="P:ClassLibraryChaoying.WindowsHelper.ScaleY">
+            <summary>
+            获取高度缩放百分比
+            </summary>
+        </member>
+        <member name="M:ClassLibraryChaoying.WindowsHelper.GetInputReasonWnd">
+            <summary>
+            获取输入认证信息窗口
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ClassLibraryChaoying.WindowsHelper.WeWorkMessageBoxFrameNotFind">
+            <summary>
+            该用户不存在
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ClassLibraryChaoying.WindowsHelper.SearchExternalsWnd">
+            <summary>
+            添加客户窗口
+            </summary>
+        </member>
+        <member name="M:ClassLibraryChaoying.WindowsHelper.CloseWindow(System.IntPtr)">
+            <summary>
+            
+            </summary>
+            <param name="hwnd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClassLibraryChaoying.WindowsHelper.CheckMousePoint(System.Int64,System.Int64)">
+            <summary>
+            
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+        </member>
+        <member name="T:ClassLibraryChaoying.RECT">
+            <summary>
+            窗体坐标
+            </summary>
+        </member>
+        <member name="F:ClassLibraryChaoying.RECT.Left">
+            <summary>
+            矩形左上角的x坐标
+            </summary>
+        </member>
+        <member name="F:ClassLibraryChaoying.RECT.Top">
+            <summary>
+            矩形左上角的y坐标
+            </summary>
+        </member>
+        <member name="F:ClassLibraryChaoying.RECT.Right">
+            <summary>
+            指定矩形右下角的x坐标。
+            </summary>
+        </member>
+        <member name="F:ClassLibraryChaoying.RECT.Bottom">
+            <summary>
+            矩形右下角的y坐标
+            </summary>
+        </member>
+        <member name="T:ClassLibraryChaoying.POINT">
+            <summary>
+            鼠标坐标
+            </summary>
+        </member>
+        <member name="F:ClassLibraryChaoying.POINT.X">
+            <summary>
+            x坐标
+            </summary>
+        </member>
+        <member name="F:ClassLibraryChaoying.POINT.Y">
+            <summary>
+            y坐标
+            </summary>
+        </member>
+        <member name="M:ClassLibraryChaoying.POINT.#ctor(System.Int32,System.Int32)">
+            <summary>
+            构造方法
+            </summary>
+            <param name="x">x坐标</param>
+            <param name="y">y坐标</param>
+        </member>
+        <member name="T:ClassLibraryChaoying.WorkWx">
+            <summary>
+            企业微信
+            </summary>
+        </member>
+        <member name="M:ClassLibraryChaoying.WorkWx.SendMessage(System.Object)">
+            <summary>
+            调用企业微信发送消息
+            </summary>
+            <param name="obj">type:1拷贝，其它文本,mobile，textContent</param>
+        </member>
+        <member name="M:ClassLibraryChaoying.WorkWx.OpenChat(System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="obj">mobile 手机号</param>
+            <returns>0:成功，1:请打开企业微信，2:企业微信置顶失败，3:中途移动鼠标停止了操作，4:参数错误，5:侧边栏没打开</returns>
+        </member>
+        <member name="M:ClassLibraryChaoying.WorkWx.InputEnter(System.Object)">
+            <summary>
+            按下enter
+            </summary>
+            <param name="obj">{x:??,y:??}</param>
+            <returns>结果</returns>
+        </member>
+        <member name="M:ClassLibraryChaoying.WorkWx.AddCustomerByMobiles(System.Object)">
+            <summary>
+            x870 y40
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ClassLibraryChaoying.WorkWx.FindWorkWx">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ClassLibraryChaoying.WxException">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ClassLibraryChaoying.WxException.FaildMobiles">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ClassLibraryChaoying.WxException.Code">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ClassLibraryChaoying.WxException.#ctor(System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+            <param name="faildMobiles"></param>
+        </member>
+        <member name="M:ClassLibraryChaoying.WxException.#ctor(System.String,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+            <param name="code"></param>
+        </member>
+        <member name="M:ClassLibraryChaoying.WxException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+        </member>
+    </members>
+</doc>

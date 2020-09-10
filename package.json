@@ -1,0 +1,29 @@
+{
+  "name": "electron-quick-start",
+  "version": "1.0.0",
+  "description": "A minimal Electron application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "packager": "electron-packager . cyscrm --win --out ./electronApp --icon=./dist/logo.ico --overwrite --platform win32"
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^9.0.5",
+    "electron-packager": "^15.0.0"
+  },
+  "dependencies": {
+    "electron-edge-js": "^12.14.2",
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^1.0.5"
+  }
+}
