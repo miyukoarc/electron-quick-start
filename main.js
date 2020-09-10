@@ -37,7 +37,8 @@ protocol.registerSchemesAsPrivileged([{
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    // frame: false, //无边框窗口
+    devTools: isDevelopment,
+    frame: isDevelopment, //无边框窗口
     width: 800,
     height: 600,
     minHeight: 600,
