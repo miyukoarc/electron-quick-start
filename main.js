@@ -1,76 +1,4 @@
-// // Modules to control application life and create native browser window
-// const {
-//     app,
-//     BrowserWindow,
-//     ipcMain
-// } = require('electron')
-// const path = require('path')
 
-// function createWindow() {
-//     // Create the browser window.
-//     const win = new BrowserWindow({
-//         width: 800,
-//         height: 600,
-//         webPreferences: {
-//             sandbox: true,
-//             nodeIntegration: true,
-//             preload: path.join(__dirname, 'preload.js')
-//         }
-//     })
-
-//     // and load the index.html of the app.
-//     win.loadFile('./dist/index.html')
-
-//     // Open the DevTools.
-//     // win.webContents.openDevTools()
-//       win.on('maximize',(event,args)=>{
-
-//         win.webContents.send('maximizeWindow',true)
-//     })
-
-//     win.on('unmaximize',(event,args)=>{
-//         win.webContents.send('unmaximizeWindow',false)
-//     })
-// }
-
-// // This method will be called when Electron has finished
-// // initialization and is ready to create browser windows.
-// // Some APIs can only be used after this event occurs.
-// app.whenReady().then(() => {
-//     createWindow()
-
-//     app.on('activate', function () {
-//         // On macOS it's common to re-create a window in the app when the
-//         // dock icon is clicked and there are no other windows open.
-//         if (BrowserWindow.getAllWindows().length === 0) createWindow()
-//     })
-// })
-
-// // Quit when all windows are closed, except on macOS. There, it's common
-// // for applications and their menu bar to stay active until the user quits
-// // explicitly with Cmd + Q.
-// app.on('window-all-closed', function () {
-//     if (process.platform !== 'darwin') app.quit()
-// })
-
-// // In this file you can include the rest of your app's specific main process
-// // code. You can also put them in separate files and require them here.
-
-// ipcMain.on('minimizeWindow', e => {
-//   win.minimize()
-// })
-
-// ipcMain.on('maximizeWindow', e => {
-//   win.maximize()
-// })
-
-// ipcMain.on('restoreWindow', e => {
-//   win.restore()
-// })
-
-// ipcMain.on('closeWindow', e => {
-//   win.close()
-// })
 
 
 'use strict'
@@ -79,24 +7,14 @@ const {
   app,
   protocol,
   BrowserWindow,
-  BrowserView,
-  Tray,
-  Menu,
   ipcMain,
   session
 } = require('electron')
-// const {
-//   default: installExtension,
-//   VUEJS_DEVTOOLS
-// } = require('electron-devtools-installer');
-// const {createProtocol} = require('vue-cli-plugin-electron-builder/lib')
-// import {
-//   createProtocol,
-//   /* installVueDevtools */
-// } from 'vue-cli-plugin-electron-builder/lib'
+
 
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const redirectUrl = 'http://xxx.xxx.com'
 const path = require('path')
 const os = require('os')
 const edge = require('electron-edge-js')
@@ -137,47 +55,15 @@ function createWindow() {
     }
   })
 
+  if(isDevelopment){
+      win.loadFile('./dist/index.html')
 
+  }else {
+      win.loadURL(redirectUrl)
+  }
 
-
-//   if (process.env.WEBPACK_DEV_SERVER_URL) {
-//     // Load the url of the dev server if in development mode
-//     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-//     if (!process.env.IS_TEST) win.webContents.openDevTools()
-
-//   } else {
-//     // createProtocol('app')
-//     // Load the index.html when not in development
-//     win.loadURL('app://./index.html') //electron-builder
-//     // win.loadURL('./dist/index.html')
-
-//   }
-win.loadFile('./dist/index.html')
-
-// win.webContents.on('will-navigate', (event, url) => {
-//     // event.preventDefault()
-//     //   if(url.match('sidebar.cysrcrm.com')){
-//     const str = JSON.stringify(url)
-//     win.webContents.send('login-navigate', str)
-//     //   }
-
-//   })
 
   let loginFlag = false
-
-//   win.webContents.on('will-redirect', (event, url) => {
-//     //   event.preventDefault()
-//       if(url==='http://sidebar.cyscrm.com/'&&!loginFlag){
-          
-//           const str = JSON.stringify(url)
-//           win.webContents.send('login-redirect', str)
-
-//           win.loadURL('http://localhost/#/')
-//           loginFlag = true
-//       }
-
-//       console.log(loginFlag)
-//   })
 
 
   win.on('ready-to-show', () => {
