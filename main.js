@@ -89,40 +89,6 @@ function createWindow() {
   win.webContents.on('will-redirect', (event, url) => {
 
 
-    const ses = session.defaultSession.cookies.get({
-      name: 'SESSION'
-    })
-
-    ses.then(res => {
-        console.log(res)
-
-      const {
-        name,
-        value,
-        domain,
-        hostOnly,
-        path,
-        secure,
-        httpOnly,
-      } = res[0]
-
-
-      session.defaultSession.cookies.set({
-        url: 'http://sidebar.cyscrm.com',
-        name,
-        value,
-        domain,
-        hostOnly,
-        path,
-        secure,
-        httpOnly,
-        session: false,
-        expirationDate: 2592000
-      })
-
-
-    })
-
   })
 
 
