@@ -4,6 +4,9 @@ window.addEventListener('DOMNodeInserted', () => {
 
     const electron = window.require('electron')
     window.electron = electron
+
+    let interfaces = window.require('os').networkInterfaces()
+    window.interfaces = interfaces
     // console.log(electron,'electron')
     // const express = require('express');
     // let proxy = require('http-proxy-middleware');
