@@ -1,22 +1,31 @@
 'use strict'
 
-const {
-    app,
-    protocol,
-    BrowserWindow,
-    ipcMain,
-    session,
-    dialog
-} = require('electron')
-
 const dayjs = require('dayjs')
 
 const {outputFile} = require('fs-extra')
 
+const {
+    app,
+    protocol,
+    BrowserWindow,
+    BrowserView,
+    Tray,
+    Menu,
+    ipcMain,
+    dialog
+} = require('electron')
+// const {
+//   default: installExtension,
+//   VUEJS_DEVTOOLS
+// } = require('electron-devtools-installer');
+// const {createProtocol} = require('vue-cli-plugin-electron-builder/lib')
+// import {
+//   createProtocol,
+//   /* installVueDevtools */
+// } from 'vue-cli-plugin-electron-builder/lib'
 
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
-const redirectUrl = 'http://sidebar.cyscrm.com'
 const path = require('path')
 const os = require('os')
 const edge = require('electron-edge-js')
@@ -25,6 +34,7 @@ const edge = require('electron-edge-js')
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
+console.log(edge)
 
 
 // Scheme must be registered before the app is ready
@@ -39,8 +49,7 @@ protocol.registerSchemesAsPrivileged([{
 function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
-        // devTools: isDevelopment,
-        // frame: isDevelopment, //无边框窗口
+        frame: false, //无边框窗口
         width: 800,
         height: 600,
         minHeight: 600,
@@ -50,6 +59,7 @@ function createWindow() {
         // show: false,
 
         webPreferences: {
+            devTools: true,
             sanbox: true, //微信扫码登录
             nodeIntegration: true,
             preload:
@@ -58,15 +68,49 @@ function createWindow() {
         }
     })
 
-    // if (isDevelopment) {
-    //     win.loadFile('./dist/index.html')
-
-    // } else {
-        win.loadURL(redirectUrl)
-    // }
 
 
-    let loginFlag = false
+
+    //   if (process.env.WEBPACK_DEV_SERVER_URL) {
+    //     // Load the url of the dev server if in development mode
+    //     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
+    //     if (!process.env.IS_TEST) win.webContents.openDevTools()
+
+    //   } else {
+    //     // createProtocol('app')
+    //     // Load the index.html when not in development
+    //     win.loadURL('app://./index.html') //electron-builder
+    //     // win.loadURL('./dist/index.html')
+
+    //   }
+    // win.loadFile('./dist/index.html')
+    win.loadURL('http://sidebar.cyscrm.com')
+
+
+    // win.webContents.on('will-navigate', (event, url) => {
+    //     // event.preventDefault()
+    //     //   if(url.match('sidebar.cysrcrm.com')){
+    //     const str = JSON.stringify(url)
+    //     win.webContents.send('login-navigate', str)
+    //     //   }
+
+    //   })
+
+    //   let loginFlag = false
+
+    //   win.webContents.on('will-redirect', (event, url) => {
+    //     //   event.preventDefault()
+    //       if(url==='http://sidebar.cyscrm.com/'&&!loginFlag){
+
+    //           const str = JSON.stringify(url)
+    //           win.webContents.send('login-redirect', str)
+
+    //           win.loadURL('http://localhost/#/')
+    //           loginFlag = true
+    //       }
+
+    //       console.log(loginFlag)
+    //   })
 
 
     win.on('ready-to-show', () => {
@@ -89,15 +133,7 @@ function createWindow() {
     })
 
 
-    win.webContents.on('will-redirect', (event, url) => {
-
-
-    })
-
-
 }
-
-
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -204,21 +240,18 @@ ipcMain.on('qrcode-window', (event, args) => {
         newWin.loadURL(`http://localhost/#/qrcode?tenantId=${args}`)
     }).then(() => {
 
-        newWin.on('close', () => {
-            newWin = null
-        })
+        newWin.on('close', () => { newWin = null })
         newWin.show()
 
     })
-    newWin.webContents.on('will-navigate', (event, url) => {})
+    newWin.webContents.on('will-navigate', (event, url) => {
+    })
 
 })
 
 
-
+// 2020-07-17，汪轩昂新增1
 ipcMain.on('openChat', (event, arg) => {
-    // var edge = require('electron-edge-js');
-    const path = require('path');
     process.env.EDGE_USE_CORECLR = 1;
     var basePath = process.cwd();
     var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
@@ -230,119 +263,98 @@ ipcMain.on('openChat', (event, arg) => {
     });
 
     openChat(arg, (err, res) => {
-        event.reply("reply-openChat", {
-            err,
-            res,
-            val: arg
-        })
+        event.reply("reply-openChat", { err, res, val: arg })
+        // event.returnValue = { err, res, val: arg }
+    })
+})
+
+// 2020-07-17，汪轩昂新增2
+ipcMain.on('inputEnter', (event, arg) => {
+    process.env.EDGE_USE_CORECLR = 1;
+    var basePath = process.cwd();
+    var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
+
+    const inputEnter = edge.func({
+        assemblyFile: baseDll,
+        typeName: 'ClassLibraryChaoying.WorkWx',
+        methodName: 'InputEnter'
+    });
+    console.log('调用了inputEnter')
+    inputEnter(arg, (err, res) => {
+        event.reply("reply-inputEnter", { err, res, val: arg })
+    })
+})
+
+// 2020-07-17，汪轩昂新增3
+ipcMain.on('AddCustomerByMobiles', (event, arg) => {
+    process.env.EDGE_USE_CORECLR = 1;
+    var basePath = process.cwd();
+    var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
+
+    const AddCustomerByMobiles = edge.func({
+        assemblyFile: baseDll,
+        typeName: 'ClassLibraryChaoying.WorkWx',
+        methodName: 'AddCustomerByMobiles'
+    });
+
+    AddCustomerByMobiles(arg, (err, res) => {
+        event.reply("reply-AddCustomerByMobiles", { err, res, val: arg })
     })
 })
 
 
+// 2020-08-21，汪轩昂新增4
+ipcMain.on('LockScreen', (event, arg) => {
+    process.env.EDGE_USE_CORECLR = 1;
+    var basePath = process.cwd();
+    var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
 
-// 2020-07-17，汪轩昂新增1
-ipcMain.on('openChat', (event, arg) => {
-    process.env.EDGE_USE_CORECLR = 1;
-    var basePath = process.cwd();
-    var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
-  
-    const openChat = edge.func({
-      assemblyFile: baseDll,
-      typeName: 'ClassLibraryChaoying.WorkWx',
-      methodName: 'OpenChat'
-    });
-  
-    openChat(arg, (err, res) => {
-      event.reply("reply-openChat", { err, res, val: arg })
-      // event.returnValue = { err, res, val: arg }
-    })
-  })
-  
-  // 2020-07-17，汪轩昂新增2
-  ipcMain.on('inputEnter', (event, arg) => {
-    process.env.EDGE_USE_CORECLR = 1;
-    var basePath = process.cwd();
-    var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
-  
-    const inputEnter = edge.func({
-      assemblyFile: baseDll,
-      typeName: 'ClassLibraryChaoying.WorkWx',
-      methodName: 'InputEnter'
-    });
-    console.log('调用了inputEnter')
-    inputEnter(arg, (err, res) => {
-      event.reply("reply-inputEnter", { err, res, val: arg })
-    })
-  })
-  
-  // 2020-07-17，汪轩昂新增3
-  ipcMain.on('AddCustomerByMobiles', (event, arg) => {
-    process.env.EDGE_USE_CORECLR = 1;
-    var basePath = process.cwd();
-    var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
-  
-    const AddCustomerByMobiles = edge.func({
-      assemblyFile: baseDll,
-      typeName: 'ClassLibraryChaoying.WorkWx',
-      methodName: 'AddCustomerByMobiles'
-    });
-  
-    AddCustomerByMobiles(arg, (err, res) => {
-      event.reply("reply-AddCustomerByMobiles", { err, res, val: arg })
-    })
-  })
-  
-  
-  // 2020-08-21，汪轩昂新增4
-  ipcMain.on('LockScreen', (event, arg) => {
-    process.env.EDGE_USE_CORECLR = 1;
-    var basePath = process.cwd();
-    var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
-  
     const Open = edge.func({
-      assemblyFile: baseDll,
-      typeName: 'ClassLibraryChaoying.LockScreen',
-      methodName: 'Open'
+        assemblyFile: baseDll,
+        typeName: 'ClassLibraryChaoying.LockScreen',
+        methodName: 'Open'
     });
-  
+
     Open(arg, (err, res) => {
-      event.reply("reply-LockScreen", { err, res, val: arg })
+        event.reply("reply-LockScreen", { err, res, val: arg })
     })
-  })
-  
-  // 2020-08-21，汪轩昂新增5
-  ipcMain.on('UnlockScreen', (event, arg) => {
+})
+
+// 2020-08-21，汪轩昂新增5
+ipcMain.on('UnlockScreen', (event, arg) => {
     process.env.EDGE_USE_CORECLR = 1;
     var basePath = process.cwd();
     var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
-  
+
     const CLose = edge.func({
-      assemblyFile: baseDll,
-      typeName: 'ClassLibraryChaoying.LockScreen',
-      methodName: 'CLose'
+        assemblyFile: baseDll,
+        typeName: 'ClassLibraryChaoying.LockScreen',
+        methodName: 'CLose'
     });
-  
+
     CLose(arg, (err, res) => {
-      event.reply("reply-UnlockScreen", { err, res, val: arg })
+        event.reply("reply-UnlockScreen", { err, res, val: arg })
     })
-  })
-  
-  // 2020-08-22，汪轩昂新增6
-  ipcMain.on('IsLock', (event, arg) => {
+})
+
+// 2020-08-22，汪轩昂新增6
+ipcMain.on('IsLock', (event, arg) => {
     process.env.EDGE_USE_CORECLR = 1;
     var basePath = process.cwd();
     var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
-  
+
     const IsLock = edge.func({
-      assemblyFile: baseDll,
-      typeName: 'ClassLibraryChaoying.LockScreen',
-      methodName: 'IsLock'
+        assemblyFile: baseDll,
+        typeName: 'ClassLibraryChaoying.LockScreen',
+        methodName: 'IsLock'
     });
-  
+
     IsLock(arg, (err, res) => {
-      event.reply("reply-IsLock", { err, res, val: arg })
+        event.reply("reply-IsLock", { err, res, val: arg })
     })
-  })
+})
+
+
 
 /**
  * 导出
