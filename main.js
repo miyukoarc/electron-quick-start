@@ -5,13 +5,18 @@ const {
     protocol,
     BrowserWindow,
     ipcMain,
-    session
+    session,
+    dialog
 } = require('electron')
+
+const dayjs = require('dayjs')
+
+const {outputFile} = require('fs-extra')
 
 
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
-const redirectUrl = 'http://xxx.xxx.com'
+const redirectUrl = 'http://sidebar.cyscrm.com'
 const path = require('path')
 const os = require('os')
 const edge = require('electron-edge-js')
@@ -34,8 +39,8 @@ protocol.registerSchemesAsPrivileged([{
 function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
-        devTools: isDevelopment,
-        frame: isDevelopment, //无边框窗口
+        // devTools: isDevelopment,
+        // frame: isDevelopment, //无边框窗口
         width: 800,
         height: 600,
         minHeight: 600,
@@ -53,12 +58,12 @@ function createWindow() {
         }
     })
 
-    if (isDevelopment) {
-        win.loadFile('./dist/index.html')
+    // if (isDevelopment) {
+    //     win.loadFile('./dist/index.html')
 
-    } else {
+    // } else {
         win.loadURL(redirectUrl)
-    }
+    // }
 
 
     let loginFlag = false
