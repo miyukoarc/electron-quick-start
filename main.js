@@ -238,29 +238,111 @@ ipcMain.on('openChat', (event, arg) => {
     })
 })
 
-// 2020-07-17，汪轩昂新增
-ipcMain.on('inputEnter', (event, arg) => {
-    // var edge = require('electron-edge-js');
-    const path = require('path');
+
+
+// 2020-07-17，汪轩昂新增1
+ipcMain.on('openChat', (event, arg) => {
     process.env.EDGE_USE_CORECLR = 1;
     var basePath = process.cwd();
     var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
-
-    const inputEnter = edge.func({
-        assemblyFile: baseDll,
-        typeName: 'ClassLibraryChaoying.WorkWx',
-        methodName: 'InputEnter'
+  
+    const openChat = edge.func({
+      assemblyFile: baseDll,
+      typeName: 'ClassLibraryChaoying.WorkWx',
+      methodName: 'OpenChat'
     });
-
-    inputEnter(arg, (err, res) => {
-        event.reply("reply-inputEnter", {
-            err,
-            res,
-            val: arg
-        })
+  
+    openChat(arg, (err, res) => {
+      event.reply("reply-openChat", { err, res, val: arg })
+      // event.returnValue = { err, res, val: arg }
     })
-})
-
+  })
+  
+  // 2020-07-17，汪轩昂新增2
+  ipcMain.on('inputEnter', (event, arg) => {
+    process.env.EDGE_USE_CORECLR = 1;
+    var basePath = process.cwd();
+    var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
+  
+    const inputEnter = edge.func({
+      assemblyFile: baseDll,
+      typeName: 'ClassLibraryChaoying.WorkWx',
+      methodName: 'InputEnter'
+    });
+    console.log('调用了inputEnter')
+    inputEnter(arg, (err, res) => {
+      event.reply("reply-inputEnter", { err, res, val: arg })
+    })
+  })
+  
+  // 2020-07-17，汪轩昂新增3
+  ipcMain.on('AddCustomerByMobiles', (event, arg) => {
+    process.env.EDGE_USE_CORECLR = 1;
+    var basePath = process.cwd();
+    var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
+  
+    const AddCustomerByMobiles = edge.func({
+      assemblyFile: baseDll,
+      typeName: 'ClassLibraryChaoying.WorkWx',
+      methodName: 'AddCustomerByMobiles'
+    });
+  
+    AddCustomerByMobiles(arg, (err, res) => {
+      event.reply("reply-AddCustomerByMobiles", { err, res, val: arg })
+    })
+  })
+  
+  
+  // 2020-08-21，汪轩昂新增4
+  ipcMain.on('LockScreen', (event, arg) => {
+    process.env.EDGE_USE_CORECLR = 1;
+    var basePath = process.cwd();
+    var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
+  
+    const Open = edge.func({
+      assemblyFile: baseDll,
+      typeName: 'ClassLibraryChaoying.LockScreen',
+      methodName: 'Open'
+    });
+  
+    Open(arg, (err, res) => {
+      event.reply("reply-LockScreen", { err, res, val: arg })
+    })
+  })
+  
+  // 2020-08-21，汪轩昂新增5
+  ipcMain.on('UnlockScreen', (event, arg) => {
+    process.env.EDGE_USE_CORECLR = 1;
+    var basePath = process.cwd();
+    var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
+  
+    const CLose = edge.func({
+      assemblyFile: baseDll,
+      typeName: 'ClassLibraryChaoying.LockScreen',
+      methodName: 'CLose'
+    });
+  
+    CLose(arg, (err, res) => {
+      event.reply("reply-UnlockScreen", { err, res, val: arg })
+    })
+  })
+  
+  // 2020-08-22，汪轩昂新增6
+  ipcMain.on('IsLock', (event, arg) => {
+    process.env.EDGE_USE_CORECLR = 1;
+    var basePath = process.cwd();
+    var baseDll = basePath + '/resources/app/lib/ClassLibraryChaoying.dll';
+  
+    const IsLock = edge.func({
+      assemblyFile: baseDll,
+      typeName: 'ClassLibraryChaoying.LockScreen',
+      methodName: 'IsLock'
+    });
+  
+    IsLock(arg, (err, res) => {
+      event.reply("reply-IsLock", { err, res, val: arg })
+    })
+  })
 
 /**
  * 导出
