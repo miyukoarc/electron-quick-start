@@ -5,6 +5,7 @@
 const dayjs = require('dayjs')
 
 const {outputFile} = require('fs-extra')
+const fs = require('fs')
 
 const {
     app,
