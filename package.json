@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "packager": "electron-packager . cyscrm --win --out ./electronApp --icon=./dist/logo.ico --overwrite --platform win32"
+    "packager": "electron-packager . cyscrm --win --out ./electronApp --icon=./dist/logo.ico --overwrite --platform win32 --arch ia32"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [

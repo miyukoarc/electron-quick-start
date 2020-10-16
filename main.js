@@ -56,7 +56,7 @@ function createWindow() {
         minWidth: 800,
         // maximizable: false,
         // transparent: true, 
-        // show: false,
+        show: false,
 
         webPreferences: {
             devTools: true,
@@ -84,7 +84,7 @@ function createWindow() {
 
     //   }
     // win.loadFile('./dist/index.html')
-    win.loadURL('http://sidebar.cyscrm.com')
+    win.loadURL('http://cy.lihengguang.cn')
 
 
     // win.webContents.on('will-navigate', (event, url) => {
@@ -361,40 +361,126 @@ ipcMain.on('IsLock', (event, arg) => {
  */
 
 
-//下载文件保存
-ipcMain.on('SAVE_FILE', (event, path, buffer) => {
 
-    outputFile(path, buffer, err => {
-        if (err) {
-            // event.sender.send(ERROR, err.message)
-            //   event.sender.send('SAVED_FILE', err.message)
-            console.log('save failed')
-        } else {
-            //   event.sender.send('SAVED_FILE', path)
-            console.log('save success')
-            // event.sender.send()
-        }
+//!保存聊天存档
+ipcMain.on('SAVE_STREAM', (event, filename, url) => {
+    const file = fs.createWriteStream(filename)
+  
+    http.get(url, res => {
+      res.pipe(file)
+  
+      res.once('end', () => {
+        console.log('main success')
+        event.sender.send('download-stream-success')
+        resolve()
+      })
+  
+      res.once('error', () => {
+        event.sender.send('download-stream-failed')
+        rejects()
+      })
+  
     })
-})
-
-//打开文件选择框
-ipcMain.on('open-directory-dialog', (event, payload) => {
+  })
+  
+  //!保存上传文件（media）
+  ipcMain.on('SAVE_UPLOAD_FILE', (event, filename, url) => {
+      console.log(filename,url)
+    const file = fs.createWriteStream(filename)
+  
+    http.get(url, res => {
+      res.pipe(file)
+      res.once('end', () => {
+        event.sender.send('download-file-success')
+  
+        resolve()
+      })
+      res.once('error', () => {
+        event.sender.send('download-file-failed')
+  
+        rejects()
+      })
+    })
+  })
+  
+  //下载文件保存
+  ipcMain.on('SAVE_FILE', (event, path, buffer) => {
+  
+    outputFile(path, buffer, err => {
+      if (err) {
+        // event.sender.send(ERROR, err.message)
+        //   event.sender.send('SAVED_FILE', err.message)
+        console.log('save failed')
+      } else {
+        //   event.sender.send('SAVED_FILE', path)
+        console.log('save success')
+        // event.sender.send()
+      }
+    })
+  })
+  
+  //打开文件选择框
+  ipcMain.on('open-directory-dialog', (event, payload) => {
     let date = dayjs(new Date()).format('YYYY-MM-DD_hh-mm-ss')
     dialog.showSaveDialog({
-        defaultPath: `${payload}${date}.xls`,
+      defaultPath: `${payload}${date}.xls`,
     }).then(res => {
-        console.log(res.filePath)
-        let payload = {}
-        if (res.canceled) {
-            payload = {
-                status: false
-            }
-        } else {
-            payload = {
-                status: true,
-                filePath: res.filePath
-            }
+      console.log(res.filePath)
+      let payload = {}
+      if (res.canceled) {
+        payload = {
+          status: false
         }
-        event.sender.send('selectedDirectory', payload)
+      } else {
+        payload = {
+          status: true,
+          filePath: res.filePath
+        }
+      }
+      event.sender.send('selectedDirectory', payload)
     })
-})
+  })
+  
+  //!路径选择框 会话存档
+  ipcMain.on('open-directory-dialog-message', (event, payload) => {
+    let date = dayjs(new Date()).format('YYYY-MM-DD_hh-mm-ss')
+    dialog.showSaveDialog({
+      defaultPath: `${date}${payload}.zip`,
+    }).then(res => {
+      console.log(res.filePath)
+      let payload = {}
+      if (res.canceled) {
+        payload = {
+          status: false
+        }
+      } else {
+        payload = {
+          status: true,
+          filePath: res.filePath
+        }
+      }
+      event.sender.send('selected-directory-message', payload)
+    })
+  })
+  
+  //!路径选择框 上传文件
+  ipcMain.on('open-directory-dialog-file', (event, filename) => {
+    dialog.showSaveDialog({
+      defaultPath: `${filename}`
+    }).then(res => {
+      let payload = {}
+      if (res.canceled) {
+        payload = {
+          status: false
+        }
+      } else {
+        payload = {
+          status: true,
+          filePath: res.filePath
+        }
+      }
+  
+      event.sender.send('selected-directory-file', payload)
+    })
+  })
+  
