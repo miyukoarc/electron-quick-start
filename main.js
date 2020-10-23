@@ -6,6 +6,7 @@ const dayjs = require('dayjs')
 
 const {outputFile} = require('fs-extra')
 const fs = require('fs')
+const http = require('http')
 
 const {
     app,
@@ -87,7 +88,7 @@ function createWindow() {
 
     //   }
     // win.loadFile('./dist/index.html')
-    win.loadURL('http://cy.lihengguang.cn')
+    win.loadURL('http://nb.lihengguang.cn')
 
 
     // win.webContents.on('will-navigate', (event, url) => {
@@ -375,12 +376,12 @@ ipcMain.on('SAVE_STREAM', (event, filename, url) => {
       res.once('end', () => {
         console.log('main success')
         event.sender.send('download-stream-success')
-        resolve()
+
       })
   
       res.once('error', () => {
         event.sender.send('download-stream-failed')
-        rejects()
+
       })
   
     })
@@ -396,12 +397,10 @@ ipcMain.on('SAVE_STREAM', (event, filename, url) => {
       res.once('end', () => {
         event.sender.send('download-file-success')
   
-        resolve()
       })
       res.once('error', () => {
         event.sender.send('download-file-failed')
   
-        rejects()
       })
     })
   })
