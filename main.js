@@ -4,7 +4,7 @@
 
 const dayjs = require('dayjs')
 
-const {outputFile} = require('fs-extra')
+const { outputFile } = require('fs-extra')
 const fs = require('fs')
 const http = require('http')
 
@@ -18,15 +18,15 @@ const {
     ipcMain,
     dialog
 } = require('electron')
-// const {
-//   default: installExtension,
-//   VUEJS_DEVTOOLS
-// } = require('electron-devtools-installer');
-// const {createProtocol} = require('vue-cli-plugin-electron-builder/lib')
-// import {
-//   createProtocol,
-//   /* installVueDevtools */
-// } from 'vue-cli-plugin-electron-builder/lib'
+    // const {
+    //   default: installExtension,
+    //   VUEJS_DEVTOOLS
+    // } = require('electron-devtools-installer');
+    // const {createProtocol} = require('vue-cli-plugin-electron-builder/lib')
+    // import {
+    //   createProtocol,
+    //   /* installVueDevtools */
+    // } from 'vue-cli-plugin-electron-builder/lib'
 
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -67,7 +67,7 @@ function createWindow() {
             sanbox: true, //微信扫码登录
             nodeIntegration: true,
             preload:
-                // path.resolve('./src/preload.js')
+            // path.resolve('./src/preload.js')
                 path.join(__dirname, 'preload.js')
         }
     })
@@ -88,7 +88,7 @@ function createWindow() {
 
     //   }
     // win.loadFile('./dist/index.html')
-    win.loadURL('http://nb.lihengguang.cn')
+    win.loadURL('http://ningbo.cyscrm.com')
 
 
     // win.webContents.on('will-navigate', (event, url) => {
@@ -122,8 +122,8 @@ function createWindow() {
     })
     win.on('closed', (event, args) => {
         win = null
-        // win.hide(); 
-        // win.setSkipTaskbar(true);
+            // win.hide(); 
+            // win.setSkipTaskbar(true);
         event.preventDefault();
     })
 
@@ -170,7 +170,7 @@ app.on('activate', () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', async () => {
+app.on('ready', async() => {
     if (isDevelopment && !process.env.IS_TEST) {
         // Install Vue Devtools
         // Devtools extensions are broken in Electron 6.0.0 and greater
@@ -248,8 +248,7 @@ ipcMain.on('qrcode-window', (event, args) => {
         newWin.show()
 
     })
-    newWin.webContents.on('will-navigate', (event, url) => {
-    })
+    newWin.webContents.on('will-navigate', (event, url) => {})
 
 })
 
@@ -268,7 +267,7 @@ ipcMain.on('openChat', (event, arg) => {
 
     openChat(arg, (err, res) => {
         event.reply("reply-openChat", { err, res, val: arg })
-        // event.returnValue = { err, res, val: arg }
+            // event.returnValue = { err, res, val: arg }
     })
 })
 
@@ -369,120 +368,119 @@ ipcMain.on('IsLock', (event, arg) => {
 //!保存聊天存档
 ipcMain.on('SAVE_STREAM', (event, filename, url) => {
     const file = fs.createWriteStream(filename)
-  
+
     http.get(url, res => {
-      res.pipe(file)
-  
-      res.once('end', () => {
-        console.log('main success')
-        event.sender.send('download-stream-success')
+        res.pipe(file)
 
-      })
-  
-      res.once('error', () => {
-        event.sender.send('download-stream-failed')
+        res.once('end', () => {
+            console.log('main success')
+            event.sender.send('download-stream-success')
 
-      })
-  
+        })
+
+        res.once('error', () => {
+            event.sender.send('download-stream-failed')
+
+        })
+
     })
-  })
-  
-  //!保存上传文件（media）
-  ipcMain.on('SAVE_UPLOAD_FILE', (event, filename, url) => {
-      console.log(filename,url)
+})
+
+//!保存上传文件（media）
+ipcMain.on('SAVE_UPLOAD_FILE', (event, filename, url) => {
+    console.log(filename, url)
     const file = fs.createWriteStream(filename)
-  
+
     http.get(url, res => {
-      res.pipe(file)
-      res.once('end', () => {
-        event.sender.send('download-file-success')
-  
-      })
-      res.once('error', () => {
-        event.sender.send('download-file-failed')
-  
-      })
+        res.pipe(file)
+        res.once('end', () => {
+            event.sender.send('download-file-success')
+
+        })
+        res.once('error', () => {
+            event.sender.send('download-file-failed')
+
+        })
     })
-  })
-  
-  //下载文件保存
-  ipcMain.on('SAVE_FILE', (event, path, buffer) => {
-  
+})
+
+//下载文件保存
+ipcMain.on('SAVE_FILE', (event, path, buffer) => {
+
     outputFile(path, buffer, err => {
-      if (err) {
-        // event.sender.send(ERROR, err.message)
-        //   event.sender.send('SAVED_FILE', err.message)
-        console.log('save failed')
-      } else {
-        //   event.sender.send('SAVED_FILE', path)
-        console.log('save success')
-        // event.sender.send()
-      }
+        if (err) {
+            // event.sender.send(ERROR, err.message)
+            //   event.sender.send('SAVED_FILE', err.message)
+            console.log('save failed')
+        } else {
+            //   event.sender.send('SAVED_FILE', path)
+            console.log('save success')
+                // event.sender.send()
+        }
     })
-  })
-  
-  //打开文件选择框
-  ipcMain.on('open-directory-dialog', (event, payload) => {
+})
+
+//打开文件选择框
+ipcMain.on('open-directory-dialog', (event, payload) => {
     let date = dayjs(new Date()).format('YYYY-MM-DD_hh-mm-ss')
     dialog.showSaveDialog({
-      defaultPath: `${payload}${date}.xls`,
+        defaultPath: `${payload}${date}.xls`,
     }).then(res => {
-      console.log(res.filePath)
-      let payload = {}
-      if (res.canceled) {
-        payload = {
-          status: false
+        console.log(res.filePath)
+        let payload = {}
+        if (res.canceled) {
+            payload = {
+                status: false
+            }
+        } else {
+            payload = {
+                status: true,
+                filePath: res.filePath
+            }
         }
-      } else {
-        payload = {
-          status: true,
-          filePath: res.filePath
-        }
-      }
-      event.sender.send('selectedDirectory', payload)
+        event.sender.send('selectedDirectory', payload)
     })
-  })
-  
-  //!路径选择框 会话存档
-  ipcMain.on('open-directory-dialog-message', (event, payload) => {
+})
+
+//!路径选择框 会话存档
+ipcMain.on('open-directory-dialog-message', (event, payload) => {
     let date = dayjs(new Date()).format('YYYY-MM-DD_hh-mm-ss')
     dialog.showSaveDialog({
-      defaultPath: `${date}${payload}.zip`,
+        defaultPath: `${date}${payload}.zip`,
     }).then(res => {
-      console.log(res.filePath)
-      let payload = {}
-      if (res.canceled) {
-        payload = {
-          status: false
+        console.log(res.filePath)
+        let payload = {}
+        if (res.canceled) {
+            payload = {
+                status: false
+            }
+        } else {
+            payload = {
+                status: true,
+                filePath: res.filePath
+            }
         }
-      } else {
-        payload = {
-          status: true,
-          filePath: res.filePath
-        }
-      }
-      event.sender.send('selected-directory-message', payload)
+        event.sender.send('selected-directory-message', payload)
     })
-  })
-  
-  //!路径选择框 上传文件
-  ipcMain.on('open-directory-dialog-file', (event, filename) => {
+})
+
+//!路径选择框 上传文件
+ipcMain.on('open-directory-dialog-file', (event, filename) => {
     dialog.showSaveDialog({
-      defaultPath: `${filename}`
+        defaultPath: `${filename}`
     }).then(res => {
-      let payload = {}
-      if (res.canceled) {
-        payload = {
-          status: false
+        let payload = {}
+        if (res.canceled) {
+            payload = {
+                status: false
+            }
+        } else {
+            payload = {
+                status: true,
+                filePath: res.filePath
+            }
         }
-      } else {
-        payload = {
-          status: true,
-          filePath: res.filePath
-        }
-      }
-  
-      event.sender.send('selected-directory-file', payload)
+
+        event.sender.send('selected-directory-file', payload)
     })
-  })
-  
+})
