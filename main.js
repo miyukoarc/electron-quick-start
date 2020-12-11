@@ -17,6 +17,7 @@ const {
   Menu,
   ipcMain,
   dialog,
+  session,
 } = require("electron");
 // const {
 //   default: installExtension,
@@ -347,46 +348,80 @@ ipcMain.on("IsLock", (event, arg) => {
 ipcMain.on("SAVE_STREAM", (event, filename, url) => {
   const file = fs.createWriteStream(filename);
 
-  const req = http.request(url, {}, (res) => {
-    res.pipe(file);
+  const domain = url.match(
+    /^(?=^.{3,255}$)(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\d+)*(\/\w+\.\w+)*?/
+  )[0];
 
-    res.once("end", () => {
-      console.log("main success");
-      event.sender.send("download-stream-success");
+  session.defaultSession.cookies.get({ url: domain }).then((cookies) => {
+    const req = http.request(
+      url,
+      {
+        headers: {
+          Cookie: `${cookies[0].name}=${cookies[0].value}`,
+        },
+      },
+      (res) => {
+        res.pipe(file);
+
+        res.on("end", () => {
+          console.log("main success");
+          event.sender.send("download-stream-success");
+          // resolve()
+        });
+
+        res.on("error", () => {
+          event.sender.send("download-stream-failed");
+          // rejects()
+        });
+      }
+    );
+
+    console.log(`${cookies[0].name}=${cookies[0].value}`);
+    req.on("error", () => {
+      event.sender.send("download-file-failed");
     });
 
-    res.once("error", () => {
-      event.sender.send("download-stream-failed");
-    });
+    req.end();
   });
-
-  req.on("error", () => {
-    event.sender.send("download-stream-failed");
-  });
-
-  req.end();
 });
 
 //!保存上传文件（media）
 ipcMain.on("SAVE_UPLOAD_FILE", (event, filename, url) => {
-  console.log(filename, url);
   const file = fs.createWriteStream(filename);
 
-  const req = http.request(url, {}, (res) => {
-    res.pipe(file);
-    res.once("end", () => {
-      event.sender.send("download-file-success");
-    });
-    res.once("error", () => {
+  const domain = url.match(
+    /^(?=^.{3,255}$)(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\d+)*(\/\w+\.\w+)*?/
+  )[0];
+
+  session.defaultSession.cookies.get({ url: domain }).then((cookies) => {
+    const req = http.request(
+      url,
+      {
+        headers: {
+          Cookie: `${cookies[0].name}=${cookies[0].value}`,
+        },
+      },
+      (res) => {
+        res.pipe(file);
+        res.on("end", () => {
+          event.sender.send("download-file-success");
+
+          // resolve()
+        });
+        res.on("error", () => {
+          event.sender.send("download-file-failed");
+
+          // rejects()
+        });
+      }
+    );
+
+    req.on("error", () => {
       event.sender.send("download-file-failed");
     });
-  });
 
-  req.on("error", () => {
-    event.sender.send("download-file-failed");
+    req.end();
   });
-
-  req.end();
 });
 
 //下载文件保存
